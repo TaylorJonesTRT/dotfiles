@@ -1,0 +1,11 @@
+[user]
+	name = Taylor Jones
+	email = 9523996+TaylorJonesTRT@users.noreply.github.com
+[core]
+	excludesfile = /Users/taylorjones/.gitignore_global
+[color]
+	ui = auto
+[init]
+	defaultBranch = main
+[pull]
+	rebase = false

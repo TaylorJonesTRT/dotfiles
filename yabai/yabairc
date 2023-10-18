@@ -1,0 +1,56 @@
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+yabai -m config layout bsp
+
+yabai -m config window_placement second_child
+
+
+# paddinng
+yabai -m config top_padding 12
+yabai -m config bottom_padding 12
+yabai -m config right_padding 12
+yabai -m config left_padding 12
+yabai -m config window_gap 12
+
+
+# mouse settings
+yabai -m config mouse_follows_focus on
+
+yabai -m config mouse_modifier alt
+
+# left click + drag
+yabai -m config mouse_action1 move
+
+# right click + drag
+yabai -m config mouse_action2 resize
+
+yabai -m mouse_drop_action swap
+
+
+# Disable specific apps
+# [[regex for apps that aren't working with just the below]]
+apps='^("Logitech G Hub$" | "TablePlus$" | "Linear$" | "Bruno$")$'
+yabai -m rule --add app="${apps}" manage=off
+
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^Calculator$" manage=off
+yabai -m rule --add app="^Finder$" manage=off
+yabai -m rule --add app="^1Password$" manage=off
+yabai -m rule --add app="^TV$" manage=off
+yabai -m rule --add app="^CleanMyMac X$" manage=off
+yabai -m rule --add app="^IINA$" manage=off
+yabai -m rule --add app="^qBittorrent$" manage=off
+yabai -m rule --add app="^Steam$" manage=off
+yabai -m rule --add app="^TablePlus$" manage=off
+yabai -m rule --add app="^Linear$" manage=off
+yabai -m rule --add app="^Insomnia$" manage=off
+yabai -m rule --add app="^Bruno$" manage=off
+
+
+# Enable specific apps cause they aint working
+yabai -m rule --add app="^Microsoft Outlook$" manage=on
+yabai -m rule --add app="^Fantastical$" manage=on
+
+# debug output
+yabai -m config debug_output on
