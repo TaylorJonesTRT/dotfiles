@@ -54,6 +54,7 @@ return {
       -- LSP Server Settings
       ---@type lspconfig.options
       servers = {
+        solorgraph = {},
         eslint = {
           settings = {
             workingDirectory = { mode = "auto" },

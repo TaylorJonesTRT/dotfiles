@@ -40,6 +40,7 @@ return {
             height = 0.9,
             preview_cutoff = 1,
             mirror = false,
+            wrap_results = true,
           },
         },
         lsp_implementations = {
@@ -56,7 +57,7 @@ return {
 
     -- See `:help telescope.builtin`
     vim.keymap.set("n", "<Leader>ff", builtin.find_files)
-    vim.keymap.set("n", "<C-p>", builtin.git_files, {})
+    vim.keymap.set("n", "<leader>gff", builtin.git_files, {})
     vim.keymap.set("n", "<leader>ps", function()
       builtin.live_grep({ search = vim.fn.input("Grep> ") })
     end)

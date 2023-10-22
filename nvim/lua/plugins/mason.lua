@@ -5,11 +5,11 @@ return {
   build = ":MasonUpdate",
   opts = {
     ensure_installed = {
-      "stylua",
       "shfmt",
       "codelldb",
       "js-debug-adapter",
       "prettierd",
+      "solargraph",
       -- "flake8",
     },
   },
