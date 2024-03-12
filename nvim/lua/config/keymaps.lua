@@ -1,9 +1,11 @@
--- Space as leader key
--- see `:help mapleader`
+-- Keymaps are automatically loaded on the VeryLazy event
+-- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
+-- Add any additional keymaps here
+--
+
 vim.g.mapleader = " "
 
--- `Space + pv` will open netrw.
--- Read `:help mapping` and `:help vim.keymap.set`
+-- Space + pv will open Oil.nvim
 vim.keymap.set("n", "<leader>pv", ":Oil<CR>")
 
 -- Move Commands
