@@ -31,7 +31,7 @@ What is Kickstart?
     what your configuration is doing, and modify it to suit your needs.
 
     Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving kickstart just the way it is for a while
+    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
     or immediately breaking it into modular pieces. It's up to you!
 
     If you don't know anything about Lua, I recommend taking some time to read through
@@ -63,7 +63,7 @@ Kickstart Guide:
     about reading, navigating and searching the builtin help documentation.
 
     This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite neovim features.
+    with something. It's one of my favorite Neovim features.
 
     MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
     which is very useful when you're not sure exactly what you're looking for.
@@ -85,6 +85,13 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+
+  local get_intelephense_license = function()
+    local f = assert(io.open(os.getenv 'HOME' .. '/intelephense/license.txt', 'rb'))
+    local content = f:read '*a'
+    f:close()
+    return string.gsub(content, '%s+', '')
+  end
 
   -- Set <space> as the leader key
   -- See `:help mapleader`
@@ -256,7 +263,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
   vim.keymap.set('t', '<esc>', '<C-\\><C-n>')
 
   -- Toggles between lsp-lines and virtual-text
-  vim.keymap.set('', '<leader>dt', function()
+  vim.keymap.set('', '<leader>dlt', function()
     local config = vim.diagnostic.config()
     vim.diagnostic.config {
       virtual_text = not config.virtual_text,
@@ -312,7 +319,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
     --    require('Comment').setup({})
 
     -- "gc" to comment visual regions/lines
-    { 'numToStr/Comment.nvim', opts = {} },
+    { 'numToStr/Comment.nvim', opts = {}, lazy = true },
 
     -- Here is a more advanced example where we pass configuration
     -- options to `gitsigns.nvim`. This is equivalent to the following lua:
@@ -469,6 +476,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
           --   },
           -- },
           -- pickers = {}
+          extensions = {
+            ['ui-select'] = {
+              require('telescope.themes').get_dropdown(),
+            },
+          },
         }
 
         -- Enable telescope extensions, if they are installed
@@ -517,14 +529,18 @@ P.S. You can delete this when you're done too. It's your config now! :)
     { -- LSP Configuration & Plugins
       'neovim/nvim-lspconfig',
       dependencies = {
-        -- Automatically install LSPs and related tools to stdpath for neovim
-        'williamboman/mason.nvim',
+        -- Automatically install LSPs and related tools to stdpath for Neovim
+        { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
         'williamboman/mason-lspconfig.nvim',
         'WhoIsSethDaniel/mason-tool-installer.nvim',
 
         -- Useful status updates for LSP.
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
         { 'j-hui/fidget.nvim', opts = {} },
+
+        -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
+        -- used for completion, annotations and signatures of Neovim apis
+        { 'folke/neodev.nvim', opts = {} },
       },
       config = function()
         -- Brief Aside: **What is LSP?**
@@ -617,15 +633,36 @@ P.S. You can delete this when you're done too. It's your config now! :)
             -- When you move your cursor, the highlights will be cleared (the second autocommand).
             local client = vim.lsp.get_client_by_id(event.data.client_id)
             if client and client.server_capabilities.documentHighlightProvider then
+              local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
               vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 buffer = event.buf,
+                group = highlight_augroup,
                 callback = vim.lsp.buf.document_highlight,
               })
 
               vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
                 buffer = event.buf,
+                group = highlight_augroup,
                 callback = vim.lsp.buf.clear_references,
               })
+
+              vim.api.nvim_create_autocmd('LspDetach', {
+                group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+                callback = function(event2)
+                  vim.lsp.buf.clear_references()
+                  vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                end,
+              })
+            end
+
+            -- The following autocommand is used to enable inlay hints in your
+            -- code, if the language server you are using supports them
+            --
+            -- This may be unwanted, since they displace some of your code
+            if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+              map('<leader>th', function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+              end, '[T]oggle Inlay [H]ints')
             end
           end,
         })
@@ -740,6 +777,14 @@ P.S. You can delete this when you're done too. It's your config now! :)
           --     add_ruby_deps_command(client, buffer)
           --   end,
           -- },
+          intelephense = {
+            on_attach = on_attach,
+            cmd = { 'intelephense', '--stdio' },
+            filetypes = { 'php' },
+            init_options = {
+              licenseKey = get_intelephense_license(),
+            },
+          },
           solargraph = {
             cmd = { os.getenv 'HOME' .. '/.rbenv/shims/solargraph', 'stdio' },
           },
@@ -804,12 +849,29 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
     { -- Autoformat
       'stevearc/conform.nvim',
+      lazy = false,
+      keys = {
+        {
+          '<leader>f',
+          function()
+            require('conform').format { async = true, lsp_fallback = true }
+          end,
+          mode = '',
+          desc = '[F]ormat buffer',
+        },
+      },
       opts = {
         notify_on_error = false,
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_fallback = true,
-        },
+        format_on_save = function(bufnr)
+          -- Disable "format_on_save lsp_fallback" for languages that don't
+          -- have a well standardized coding style. You can add additional
+          -- languages here or re-enable it for the disabled ones.
+          local disable_filetypes = { c = true, cpp = true }
+          return {
+            timeout_ms = 500,
+            lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+          }
+        end,
         formatters_by_ft = {
           lua = { 'stylua' },
           -- Conform can also run multiple formatters sequentially
@@ -830,14 +892,25 @@ P.S. You can delete this when you're done too. It's your config now! :)
         {
           'L3MON4D3/LuaSnip',
           build = (function()
-            -- Build Step is needed for regex support in snippets
-            -- This step is not supported in many windows environments
-            -- Remove the below condition to re-enable on windows
+            -- Build Step is needed for regex support in snippets.
+            -- This step is not supported in many windows environments.
+            -- Remove the below condition to re-enable on windows.
             if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
               return
             end
             return 'make install_jsregexp'
           end)(),
+          dependencies = {
+            -- `friendly-snippets` contains a variety of premade snippets.
+            --    See the README about individual language/framework/plugin snippets:
+            --    https://github.com/rafamadriz/friendly-snippets
+            -- {
+            --   'rafamadriz/friendly-snippets',
+            --   config = function()
+            --     require('luasnip.loaders.from_vscode').lazy_load()
+            --   end,
+            -- },
+          },
         },
         'saadparwaiz1/cmp_luasnip',
 
@@ -877,10 +950,20 @@ P.S. You can delete this when you're done too. It's your config now! :)
             -- Select the [p]revious item
             ['<C-p>'] = cmp.mapping.select_prev_item(),
 
+            -- Scroll the documentation window [b]ack / [f]orward
+            ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+            ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
             -- Accept ([y]es) the completion.
             --  This will auto-import if your LSP supports it.
             --  This will expand snippets if the LSP sent a snippet.
             ['<C-y>'] = cmp.mapping.confirm { select = true },
+
+            -- If you prefer more traditional completion keymaps,
+            -- you can uncomment the following lines
+            --['<CR>'] = cmp.mapping.confirm { select = true },
+            --['<Tab>'] = cmp.mapping.select_next_item(),
+            --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
             -- Manually trigger a completion from nvim-cmp.
             --  Generally you don't need this, because nvim-cmp will display
@@ -905,6 +988,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
                 luasnip.jump(-1)
               end
             end, { 'i', 's' }),
+
+            -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
+            --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
           },
           sources = {
             { name = 'nvim_lsp' },
@@ -1043,6 +1129,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           'json',
           'lua',
           'markdown',
+          'luadoc',
           'markdown_inline',
           'python',
           'query',
@@ -1057,13 +1144,20 @@ P.S. You can delete this when you're done too. It's your config now! :)
         },
         -- Autoinstall languages that are not installed
         auto_install = true,
-        highlight = { enable = true },
-        indent = { enable = true },
-        endwise = { enable = true },
+        highlight = {
+          enable = true,
+          -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+          --  If you are experiencing weird indenting issues, add the language to
+          --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+          additional_vim_regex_highlighting = { 'ruby' },
+        },
+        indent = { enable = true, disable = { 'ruby' } },
       },
       config = function(_, opts)
         -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
 
+        -- Prefer git instead of curl in order to improve connectivity in some environments
+        require('nvim-treesitter.install').prefer_git = true
         ---@diagnostic disable-next-line: missing-fields
         require('nvim-treesitter.configs').setup(opts)
 
@@ -1092,15 +1186,19 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
     -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
     -- init.lua. If you want these files, they are in the repository, so you can just download them and
-    -- put them in the right spots if you want.
+    -- place them in the correct locations.
 
-    -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for kickstart
+    -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
     --
-    --  Here are some example plugins that I've included in the kickstart repository.
+    --  Here are some example plugins that I've included in the Kickstart repository.
     --  Uncomment any of the lines below to enable them (you will need to restart nvim).
     --
     -- require 'kickstart.plugins.debug',
     -- require 'kickstart.plugins.indent_line',
+    -- require 'kickstart.plugins.lint',
+    -- require 'kickstart.plugins.autopairs',
+    -- require 'kickstart.plugins.neo-tree',
+    -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
     -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
     --    This is the easiest way to modularize your config.
@@ -1110,23 +1208,23 @@ P.S. You can delete this when you're done too. It's your config now! :)
     { import = 'custom.plugins' },
   }, {
     ui = {
-      -- If you have a Nerd Font, set icons to an empty table which will use the
-      -- default lazy.nvim defined Nerd Font icons otherwise define a unicode icons table
-      icons = vim.g.have_nerd_font and {} or {
-        cmd = '⌘',
-        config = '🛠',
-        event = '📅',
-        ft = '📂',
-        init = '⚙',
-        keys = '🗝',
-        plugin = '🔌',
-        runtime = '💻',
-        require = '🌙',
-        source = '📄',
-        start = '🚀',
-        task = '📌',
-        lazy = '💤 ',
-      },
+      -- If you are using a Nerd Font: set icons to an empty table which will use the
+      -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
+      --   icons = vim.g.have_nerd_font and {} or {
+      --     cmd = '⌘',
+      --     config = '🛠',
+      --     event = '📅',
+      --     ft = '📂',
+      --     init = '⚙',
+      --     keys = '🗝',
+      --     plugin = '🔌',
+      --     runtime = '💻',
+      --     require = '🌙',
+      --     source = '📄',
+      --     start = '🚀',
+      --     task = '📌',
+      --     lazy = '💤 ',
+      --   },
     },
   })
 

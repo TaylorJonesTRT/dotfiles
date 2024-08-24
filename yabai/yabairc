@@ -30,7 +30,7 @@ yabai -m mouse_drop_action swap
 
 # Disable specific apps
 # [[regex for apps that aren't working with just the below]]
-apps='^("Logitech G Hub$" | "TablePlus$" | "Linear$" | "Bruno$")$'
+apps='^("Logitech G Hub$" | "TablePlus$" | "Linear$" | "Bruno$" | "GitKraken$")$'
 yabai -m rule --add app="${apps}" manage=off
 
 yabai -m rule --add app="^System Settings$" manage=off
