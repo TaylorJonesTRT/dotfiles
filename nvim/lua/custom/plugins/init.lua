@@ -4,6 +4,17 @@
 -- See the kickstart.nvim README for more information
 return {
   {
+    'nvim-lua/plenary.nvim',
+  },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+  },
+  {
+    'christoomey/vim-tmux-navigator',
+  },
+  {
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     build = 'cd app && yarn install',
@@ -247,7 +258,7 @@ return {
         ['<C-t>'] = 'actions.select_tab',
         ['<C-p>'] = 'actions.preview',
         ['<C-c>'] = 'actions.close',
-        ['<C-l>'] = 'actions.refresh',
+        ['<leader>pR'] = 'actions.refresh',
         ['-'] = 'actions.parent',
         ['_'] = 'actions.open_cwd',
         ['`'] = 'actions.cd',
@@ -266,6 +277,7 @@ return {
         is_hidden_file = function(name, bufnr)
           return vim.startswith(name, '.')
         end,
+        case_insensitive = false,
         sort = {
           -- sort order can be "asc" or "desc"
           -- see :help oil-columns to see which columns are sortable
@@ -425,6 +437,7 @@ return {
     desc = 'Debugging support. Requires language specific adapters to be configured. (see lang extras)',
 
     dependencies = {
+
       'rcarriga/nvim-dap-ui',
       -- virtual text for the debugger
       {
@@ -550,5 +563,53 @@ return {
   {
     'wakatime/vim-wakatime',
     lazy = false,
+  },
+  {
+    'tpope/vim-rails',
+    keys = {
+      { '<leader>R', '<cmd>Rails', desc = '[R]ails command' },
+      { '<leader>Rgc', '<cmd>Generate controller', desc = '[R]ails [g]enerate [c]ontroller' },
+    },
+  },
+  {
+    'suketa/nvim-dap-ruby',
+    config = function()
+      require('dap-ruby').setup()
+    end,
+  },
+  {
+    'hedyhli/outline.nvim',
+    lazy = true,
+    cmd = { 'Outline', 'OutlineOpen' },
+    keys = { -- Example mapping to toggle outline
+      { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle [o]utline' },
+    },
+    opts = {
+      -- Your setup opts here
+    },
+  },
+  {
+    'github/copilot.vim',
+    config = function()
+      vim.keymap.set('n', '<leader>cp', function()
+        local enabled = vim.g.copilot_enabled or false
+        if enabled then
+          vim.cmd 'Copilot disable'
+          vim.notify('Copilot disabled', vim.log.levels.INFO)
+        else
+          vim.cmd 'Copilot enable'
+          vim.notify('Copilot enabled', vim.log.levels.INFO)
+        end
+      end, {
+        desc = 'Toggle Copilot',
+        silent = true,
+      })
+    end,
+  },
+  {
+    'vyfor/cord.nvim',
+    branch = 'client-server',
+    build = ':Cord update',
+    opts = {},
   },
 }

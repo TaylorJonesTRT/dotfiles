@@ -86,8 +86,8 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
-  local get_intelephense_license = function()
-    local f = assert(io.open(os.getenv 'HOME' .. '/intelephense/license.txt', 'rb'))
+  local get_intelephense_licence = function()
+    local f = assert(io.open(os.getenv 'HOME' .. '/intelephense/licence.txt', 'rb'))
     local content = f:read '*a'
     f:close()
     return string.gsub(content, '%s+', '')
@@ -141,7 +141,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
   vim.opt.smartcase = true
 
   -- Keep signcolumn on by default
-  vim.opt.signcolumn = 'no'
+  vim.opt.signcolumn = 'yes'
 
   -- Decrease update time
   vim.opt.updatetime = 250
@@ -330,11 +330,52 @@ P.S. You can delete this when you're done too. It's your config now! :)
       'lewis6991/gitsigns.nvim',
       opts = {
         signs = {
-          add = { text = '+' },
-          change = { text = '~' },
+          add = { text = '┃' },
+          change = { text = '┃' },
           delete = { text = '_' },
           topdelete = { text = '‾' },
           changedelete = { text = '~' },
+          untracked = { text = '┆' },
+        },
+        signs_staged = {
+          add = { text = '┃' },
+          change = { text = '┃' },
+          delete = { text = '_' },
+          topdelete = { text = '‾' },
+          changedelete = { text = '~' },
+          untracked = { text = '┆' },
+        },
+        signs_staged_enable = true,
+        signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+        numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
+        linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+        word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+        watch_gitdir = {
+          follow_files = true,
+        },
+        auto_attach = true,
+        attach_to_untracked = false,
+        current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+          delay = 1000,
+          ignore_whitespace = false,
+          virt_text_priority = 100,
+          use_focus = true,
+        },
+        current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+        sign_priority = 6,
+        update_debounce = 100,
+        status_formatter = nil, -- Use default
+        max_file_length = 40000, -- Disable if file is longer than this (in lines)
+        preview_config = {
+          -- Options passed to nvim_open_win
+          border = 'single',
+          style = 'minimal',
+          relative = 'cursor',
+          row = 0,
+          col = 1,
         },
       },
     },
@@ -659,10 +700,12 @@ P.S. You can delete this when you're done too. It's your config now! :)
             -- code, if the language server you are using supports them
             --
             -- This may be unwanted, since they displace some of your code
-            if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+            if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
               map('<leader>th', function()
-                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
               end, '[T]oggle Inlay [H]ints')
+
+              vim.lsp.inlay_hint.enable()
             end
           end,
         })
@@ -757,6 +800,13 @@ P.S. You can delete this when you're done too. It's your config now! :)
           })
         end
 
+        local ret = {
+          inlay_hints = {
+            enabled = true,
+            exclude = {},
+          },
+        }
+
         local servers = {
           -- clangd = {},
           -- gopls = {},
@@ -781,13 +831,23 @@ P.S. You can delete this when you're done too. It's your config now! :)
             on_attach = on_attach,
             cmd = { 'intelephense', '--stdio' },
             filetypes = { 'php' },
+            root_dir = function()
+              return vim.loop.cwd()
+            end,
             init_options = {
-              licenseKey = get_intelephense_license(),
+              licenseKey = get_intelephense_licence(),
             },
           },
-          solargraph = {
-            cmd = { os.getenv 'HOME' .. '/.rbenv/shims/solargraph', 'stdio' },
+          ruby_lsp = {
+            cmd = { '/Users/taylorjones/.rbenv/shims/ruby-lsp' },
+            capabilities = capabilities,
           },
+          rubocop = {
+            enabled = formatter == 'rubocop' and lsp ~= 'solargraph',
+          },
+          -- solargraph = {
+          --   cmd = { os.getenv 'HOME' .. '/.rbenv/shims/solargraph', 'stdio' },
+          -- },
           lua_ls = {
             -- cmd = {...},
             -- filetypes { ...},
@@ -861,7 +921,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
         },
       },
       opts = {
-        notify_on_error = false,
+        notify_on_error = true,
         format_on_save = function(bufnr)
           -- Disable "format_on_save lsp_fallback" for languages that don't
           -- have a well standardized coding style. You can add additional
@@ -874,12 +934,24 @@ P.S. You can delete this when you're done too. It's your config now! :)
         end,
         formatters_by_ft = {
           lua = { 'stylua' },
+          php = { 'php_cs_fixer' },
           -- Conform can also run multiple formatters sequentially
           -- python = { "isort", "black" },
           --
           -- You can use a sub-list to tell conform to run *until* a formatter
           -- is found.
           -- javascript = { { "prettierd", "prettier" } },
+        },
+        formatters = {
+          ['php-cs-fixer'] = {
+            command = 'php-cs-fixer',
+            args = {
+              'fix',
+              '--config=~/Herd/xf232/php-cs-fixer.dist.php', -- Formatting preset. Other presets are available, see the php-cs-fixer docs.
+              '$FILENAME',
+            },
+            stdin = false,
+          },
         },
       },
     },
@@ -1144,6 +1216,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
         },
         -- Autoinstall languages that are not installed
         auto_install = true,
+        endwise = {
+          enable = true,
+        },
         highlight = {
           enable = true,
           -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
@@ -1206,6 +1281,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
     --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
     --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
     { import = 'custom.plugins' },
+    { import = 'custom.plugins.dap' },
   }, {
     ui = {
       -- If you are using a Nerd Font: set icons to an empty table which will use the

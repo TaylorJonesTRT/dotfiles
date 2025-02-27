@@ -3,6 +3,7 @@
 	email = 9523996+TaylorJonesTRT@users.noreply.github.com
 [core]
 	excludesfile = /Users/taylorjones/.gitignore_global
+	autocrlf = false
 [color]
 	ui = auto
 [init]
