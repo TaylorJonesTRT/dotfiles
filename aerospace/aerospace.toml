@@ -125,7 +125,7 @@ alt-3 = 'workspace 3_Mail'
 alt-4 = 'workspace 4_Notes'
 alt-5 = 'workspace 5_Music'
 alt-6 = 'workspace 6_Misc'
-alt-s = 'workspace 7_Side'
+alt-c = 'workspace 7_Cintiq'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 1_Main'
@@ -134,7 +134,7 @@ alt-shift-3 = 'move-node-to-workspace 3_Mail'
 alt-shift-4 = 'move-node-to-workspace 4_Notes'
 alt-shift-5 = 'move-node-to-workspace 5_Music'
 alt-shift-6 = 'move-node-to-workspace 6_Misc'
-alt-shift-s = 'move-node-to-workspace 7_Side'
+alt-shift-c = 'move-node-to-workspace 7_Cintiq'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -160,10 +160,6 @@ alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
 
-down = 'volume down'
-up = 'volume up'
-shift-down = ['volume set 0', 'mode main']
-
 # Ghostty config stuff
 [[on-window-detected]]
 if.app-id="com.mitchellh.ghostty"
@@ -171,11 +167,6 @@ run= [
   "layout tiling",
   'move-node-to-workspace 2_Dev'
 ]
-
-[[on-window-detected]]
-if.app-id                       = 'app.zen-browser.zen'
-if.window-title-regex-substring = 'Picture-in-Picture'
-run                             = ['layout floating', 'move-node-to-workspace 7_Side']
 
 [[on-window-detected]]
 if.app-id                       = 'app.zen-browser.zen'
@@ -250,9 +241,12 @@ if.app-id="org.mozilla.firefoxdeveloperedition"
 run= "move-node-to-workspace 6_Misc"
 
 [[on-window-detected]]
-if.app-id="com.obsproject.obs-studio"
-run= "move-node-to-workspace 7_Side"
+if.app-id="com.cocoatech.PathFinder-setapp"
+run= "layout floating"
 
+[[on-window-detected]]
+if.app-id="com.1password.1password"
+run= "layout floating"
 
 [workspace-to-monitor-force-assignment]
     '1_Main' = 'main'
@@ -261,4 +255,4 @@ run= "move-node-to-workspace 7_Side"
     '4_Notes' = 'main'
     '5_Music' = 'main'
     '6_Misc' = 'main'
-    '7_Side' = 'secondary'
+    '7_Cintiq' = 'secondary'
