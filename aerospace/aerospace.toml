@@ -121,20 +121,14 @@ alt-shift-equal = 'resize smart +50'
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
 alt-1 = 'workspace 1_Main'
 alt-2 = 'workspace 2_Dev'
-alt-3 = 'workspace 3_Mail'
+alt-3 = 'workspace 3_Zulip'
 alt-4 = 'workspace 4_Notes'
-alt-5 = 'workspace 5_Music'
-alt-6 = 'workspace 6_Misc'
-alt-s = 'workspace 7_Side'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 1_Main'
 alt-shift-2 = 'move-node-to-workspace 2_Dev'
-alt-shift-3 = 'move-node-to-workspace 3_Mail'
+alt-shift-3 = 'move-node-to-workspace 3_Zulip'
 alt-shift-4 = 'move-node-to-workspace 4_Notes'
-alt-shift-5 = 'move-node-to-workspace 5_Music'
-alt-shift-6 = 'move-node-to-workspace 6_Misc'
-alt-shift-s = 'move-node-to-workspace 7_Side'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -173,28 +167,19 @@ run= [
 ]
 
 [[on-window-detected]]
-if.app-id                       = 'app.zen-browser.zen'
-if.window-title-regex-substring = 'Picture-in-Picture'
-run                             = ['layout floating', 'move-node-to-workspace 7_Side']
+if.app-id                       = 'com.google.Chrome'
+run                             = 'move-node-to-workspace 1_Main'
 
 [[on-window-detected]]
 if.app-id                       = 'app.zen-browser.zen'
 run                             = 'move-node-to-workspace 1_Main'
 
 [[on-window-detected]]
-if.app-id="notion.id"
-run= "move-node-to-workspace 4_Notes"
-
-[[on-window-detected]]
 if.app-id="md.obsidian"
 run= "move-node-to-workspace 4_Notes"
 
 [[on-window-detected]]
-if.app-id="com.brave.Browser"
-run= ["move-node-to-workspace 2_Dev"]
-
-[[on-window-detected]]
-if.app-id="com.tinyapp.TablePlus-setapp"
+if.app-id="com.jetbrains.rubymine"
 run= ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
@@ -202,63 +187,23 @@ if.app-id="com.electron.dockerdesktop"
 run= ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.linear"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
-
-[[on-window-detected]]
-if.app-id="com.usebruno.app"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
-
-[[on-window-detected]]
 if.app-id="com.postmanlabs.mac"
 run= ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.apple.mail"
-run= "move-node-to-workspace 3_Mail"
-
-[[on-window-detected]]
-if.app-id="com.flexibits.fantastical2.mac"
-run= "move-node-to-workspace 3_Mail"
-
-[[on-window-detected]]
-if.app-id="net.pcsx2.pcsx2"
-run= "move-node-to-workspace 6_Misc"
-
-[[on-window-detected]]
-if.app-id="com.apple.Music"
-run= "move-node-to-workspace 5_Music"
-
-[[on-window-detected]]
-if.app-id="com.hnc.Discord"
-run= "move-node-to-workspace 1_Main"
+if.app-id="org.zulip.zulip-electron"
+run= ["layout floating", "move-node-to-workspace 3_Zulip"]
 
 [[on-window-detected]]
 if.app-id="com.apple.finder"
 run= "layout floating"
 
 [[on-window-detected]]
-if.app-id="org.qbittorrent.qBittorrent"
-run= "layout floating"
-
-[[on-window-detected]]
-if.app-id="com.apple.iBooksX"
-run= "move-node-to-workspace 6_Misc"
-
-[[on-window-detected]]
-if.app-id="org.mozilla.firefoxdeveloperedition"
-run= "move-node-to-workspace 6_Misc"
-
-[[on-window-detected]]
-if.app-id="com.obsproject.obs-studio"
-run= "move-node-to-workspace 7_Side"
-
+if.app-id="com.jetbrains.rubymine"
+run= ["layout tiling", "move-node-to-workspace 2_Dev"]
 
 [workspace-to-monitor-force-assignment]
     '1_Main' = 'main'
     '2_Dev' = 'main'
-    '3_Mail' = 'main'
+    '3_Zulip' = 'main'
     '4_Notes' = 'main'
-    '5_Music' = 'main'
-    '6_Misc' = 'main'
-    '7_Side' = 'secondary'
