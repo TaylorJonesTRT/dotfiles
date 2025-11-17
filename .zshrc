@@ -76,6 +76,9 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+#vi mode
+# bindkey -v
+
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -194,6 +197,3 @@ export HERD_PHP_80_INI_SCAN_DIR="/Users/taylorjones/Library/Application Support/
 
 # Herd injected PHP 7.4 configuration.
 export HERD_PHP_74_INI_SCAN_DIR="/Users/taylorjones/Library/Application Support/Herd/config/php/74/"
-
-# Tiktoken
-export LUA_CPATH="$LUA_CPATH;/opt/homebrew/lib/lua/5.4/tiktoken_core.so"

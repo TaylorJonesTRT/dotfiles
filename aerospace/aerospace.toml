@@ -9,7 +9,7 @@ after-login-command = []
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = ['exec-and-forget sketchybar']
+after-startup-command = ['exec-and-forget sketchybar', 'exec-and-forget borders active_color=0xffC198FD inactive_color=0xff494d64 width=5.0']
 
 exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
@@ -125,7 +125,8 @@ alt-3 = 'workspace 3_Mail'
 alt-4 = 'workspace 4_Notes'
 alt-5 = 'workspace 5_Music'
 alt-6 = 'workspace 6_Misc'
-alt-c = 'workspace 7_Cintiq'
+alt-7 = 'workspace 7_Side'
+alt-c = 'workspace 8_Cintiq'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 1_Main'
@@ -134,7 +135,8 @@ alt-shift-3 = 'move-node-to-workspace 3_Mail'
 alt-shift-4 = 'move-node-to-workspace 4_Notes'
 alt-shift-5 = 'move-node-to-workspace 5_Music'
 alt-shift-6 = 'move-node-to-workspace 6_Misc'
-alt-shift-c = 'move-node-to-workspace 7_Cintiq'
+alt-shift-7 = 'move-node-to-workspace 7_Side'
+alt-shift-c = 'move-node-to-workspace 8_Cintiq'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -169,8 +171,14 @@ run= [
 ]
 
 [[on-window-detected]]
-if.app-id                       = 'app.zen-browser.zen'
-run                             = 'move-node-to-workspace 1_Main'
+if.app-id='app.zen-browser.zen'
+run='move-node-to-workspace 1_Main'
+
+[[on-window-detected]]
+if.app-id = 'app.zen-browser.zen'
+if.window-title-regex-substring = 'Picture-in-Picture'
+run = ['layout floating']
+check-further-callbacks = true
 
 [[on-window-detected]]
 if.app-id="notion.id"
@@ -248,6 +256,18 @@ run= "layout floating"
 if.app-id="com.1password.1password"
 run= "layout floating"
 
+[[on-window-detected]]
+if.app-id="org.deskflow.deskflow"
+run= "layout floating"
+
+[[on-window-detected]]
+if.window-title-regex-substring="Minecarft NeoForge* 1.21.1"
+run="layout floating"
+
+[[on-window-detected]]
+if.app-name-regex-substring="Minecraft NeoForge* 1.21.1"
+run="layout floating"
+
 [workspace-to-monitor-force-assignment]
     '1_Main' = 'main'
     '2_Dev' = 'main'
@@ -255,4 +275,5 @@ run= "layout floating"
     '4_Notes' = 'main'
     '5_Music' = 'main'
     '6_Misc' = 'main'
-    '7_Cintiq' = 'secondary'
+    '7_Side' = 2
+    '8_Cintiq' = 3
