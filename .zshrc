@@ -197,3 +197,4 @@ export HERD_PHP_80_INI_SCAN_DIR="/Users/taylorjones/Library/Application Support/
 
 # Herd injected PHP 7.4 configuration.
 export HERD_PHP_74_INI_SCAN_DIR="/Users/taylorjones/Library/Application Support/Herd/config/php/74/"
+source ~/.op_integration.sh

@@ -9,10 +9,15 @@ after-login-command = []
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = ['exec-and-forget sketchybar', 'exec-and-forget borders active_color=0xffC198FD inactive_color=0xff494d64 width=5.0']
+after-startup-command = [
+    'exec-and-forget sketchybar',
+    'exec-and-forget borders active_color=0xffC198FD inactive_color=0xff494d64 width=5.0',
+]
 
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+exec-on-workspace-change = [
+    '/bin/bash',
+    '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE',
 ]
 
 # Start AeroSpace at login
@@ -62,11 +67,11 @@ preset = 'qwerty'
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
 inner.horizontal = 20
-inner.vertical =   20
-outer.left =       20
-outer.bottom =     20
-outer.top =        55
-outer.right =      20
+inner.vertical = 20
+outer.left = 20
+outer.bottom = 20
+outer.top = 55
+outer.right = 20
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -151,7 +156,10 @@ alt-shift-semicolon = 'mode service'
 [mode.service.binding]
 esc = ['reload-config', 'mode main']
 r = ['flatten-workspace-tree', 'mode main'] # reset layout
-f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
+f = [
+    'layout floating tiling',
+    'mode main',
+] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
 # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
@@ -164,15 +172,12 @@ alt-shift-l = ['join-with right', 'mode main']
 
 # Ghostty config stuff
 [[on-window-detected]]
-if.app-id="com.mitchellh.ghostty"
-run= [
-  "layout tiling",
-  'move-node-to-workspace 2_Dev'
-]
+if.app-id = "com.mitchellh.ghostty"
+run = ["layout tiling", 'move-node-to-workspace 2_Dev']
 
 [[on-window-detected]]
-if.app-id='app.zen-browser.zen'
-run='move-node-to-workspace 1_Main'
+if.app-id = 'app.zen-browser.zen'
+run = 'move-node-to-workspace 1_Main'
 
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
@@ -181,99 +186,99 @@ run = ['layout floating']
 check-further-callbacks = true
 
 [[on-window-detected]]
-if.app-id="notion.id"
-run= "move-node-to-workspace 4_Notes"
+if.app-id = "notion.id"
+run = "move-node-to-workspace 4_Notes"
 
 [[on-window-detected]]
-if.app-id="md.obsidian"
-run= "move-node-to-workspace 4_Notes"
+if.app-id = "md.obsidian"
+run = "move-node-to-workspace 4_Notes"
 
 [[on-window-detected]]
-if.app-id="com.brave.Browser"
-run= ["move-node-to-workspace 2_Dev"]
+if.app-id = "com.brave.Browser"
+run = ["move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.tinyapp.TablePlus-setapp"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
+if.app-id = "com.tinyapp.TablePlus-setapp"
+run = ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.electron.dockerdesktop"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
+if.app-id = "com.electron.dockerdesktop"
+run = ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.linear"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
+if.app-id = "com.linear"
+run = ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.usebruno.app"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
+if.app-id = "com.usebruno.app"
+run = ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.postmanlabs.mac"
-run= ["layout floating", "move-node-to-workspace 2_Dev"]
+if.app-id = "com.postmanlabs.mac"
+run = ["layout floating", "move-node-to-workspace 2_Dev"]
 
 [[on-window-detected]]
-if.app-id="com.apple.mail"
-run= "move-node-to-workspace 3_Mail"
+if.app-id = "com.apple.mail"
+run = "move-node-to-workspace 3_Mail"
 
 [[on-window-detected]]
-if.app-id="com.flexibits.fantastical2.mac"
-run= "move-node-to-workspace 3_Mail"
+if.app-id = "com.flexibits.fantastical2.mac"
+run = "move-node-to-workspace 3_Mail"
 
 [[on-window-detected]]
-if.app-id="net.pcsx2.pcsx2"
-run= "move-node-to-workspace 6_Misc"
+if.app-id = "net.pcsx2.pcsx2"
+run = "move-node-to-workspace 6_Misc"
 
 [[on-window-detected]]
-if.app-id="com.apple.Music"
-run= "move-node-to-workspace 5_Music"
+if.app-id = "com.apple.Music"
+run = "move-node-to-workspace 5_Music"
 
 [[on-window-detected]]
-if.app-id="com.hnc.Discord"
-run= "move-node-to-workspace 1_Main"
+if.app-id = "com.hnc.Discord"
+run = "move-node-to-workspace 1_Main"
 
 [[on-window-detected]]
-if.app-id="com.apple.finder"
-run= "layout floating"
+if.app-id = "com.apple.finder"
+run = "layout floating"
 
 [[on-window-detected]]
-if.app-id="org.qbittorrent.qBittorrent"
-run= "layout floating"
+if.app-id = "org.qbittorrent.qBittorrent"
+run = "layout floating"
 
 [[on-window-detected]]
-if.app-id="com.apple.iBooksX"
-run= "move-node-to-workspace 6_Misc"
+if.app-id = "com.apple.iBooksX"
+run = "move-node-to-workspace 6_Misc"
 
 [[on-window-detected]]
-if.app-id="org.mozilla.firefoxdeveloperedition"
-run= "move-node-to-workspace 6_Misc"
+if.app-id = "org.mozilla.firefoxdeveloperedition"
+run = "move-node-to-workspace 6_Misc"
 
 [[on-window-detected]]
-if.app-id="com.cocoatech.PathFinder-setapp"
-run= "layout floating"
+if.app-id = "com.cocoatech.PathFinder-setapp"
+run = "layout floating"
 
 [[on-window-detected]]
-if.app-id="com.1password.1password"
-run= "layout floating"
+if.app-id = "com.1password.1password"
+run = "layout floating"
 
 [[on-window-detected]]
-if.app-id="org.deskflow.deskflow"
-run= "layout floating"
+if.app-id = "org.deskflow.deskflow"
+run = "layout floating"
 
 [[on-window-detected]]
-if.window-title-regex-substring="Minecarft NeoForge* 1.21.1"
-run="layout floating"
+if.window-title-regex-substring = "Minecarft NeoForge* 1.21.1"
+run = "layout floating"
 
 [[on-window-detected]]
-if.app-name-regex-substring="Minecraft NeoForge* 1.21.1"
-run="layout floating"
+if.app-name-regex-substring = "Minecraft NeoForge* 1.21.1"
+run = "layout floating"
 
 [workspace-to-monitor-force-assignment]
-    '1_Main' = 'main'
-    '2_Dev' = 'main'
-    '3_Mail' = 'main'
-    '4_Notes' = 'main'
-    '5_Music' = 'main'
-    '6_Misc' = 'main'
-    '7_Side' = 2
-    '8_Cintiq' = 3
+'1_Main' = 1
+'2_Dev' = 1
+'3_Mail' = 1
+'4_Notes' = 1
+'5_Music' = 1
+'6_Misc' = 1
+'7_Side' = 2
+'8_Cintiq' = 3
