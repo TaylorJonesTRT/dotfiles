@@ -9,17 +9,16 @@ return {
       return opts
     end,
   },
+
   {
-    {
-      "neovim/nvim-lspconfig",
-      opts = {
-        servers = {
-          ruby_lsp = {
-            mason = false,
-            cmd = { "bundle", "exec", "ruby-lsp" },
-            cmd_env = {
-              RAILS_ENV = "development",
-            },
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        ruby_lsp = {
+          mason = false,
+          cmd = { "ruby-lsp" },
+          cmd_env = {
+            RAILS_ENV = "development",
           },
         },
       },

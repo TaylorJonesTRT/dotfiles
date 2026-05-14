@@ -2,116 +2,86 @@ local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 
--- Update with path to stats_provider
-sbar.exec(
-	"killall stats_provider >/dev/null; ~/Development/scripts/sketchybar-system-stats/target/release/stats_provider --memory ram_used ram_total ram_usage"
-)
--- Subscribe and use the `DISK_USAGE` var
-
-local ram_usage = sbar.add("graph", "widgets.ram", 42, {
-	position = "right",
-	graph = { color = colors.blue },
-	background = {
-		height = 22,
-		color = { alpha = 0 },
-		border_color = { alpha = 0 },
-		drawing = true,
-	},
-	icon = { string = icons.ram },
-	label = {
-		string = "ram ??%",
-		font = {
-			family = settings.font.numbers,
-			style = settings.font.style_map["Bold"],
-			size = 9.0,
-		},
-		align = "right",
-		padding_right = 0,
-		width = 0,
-		y_offset = 4,
-	},
-	padding_right = settings.paddings + 6,
+local ram = sbar.add("item", "widgets.ram", {
+    position = "right",
+    update_freq = 2,
+    icon = {
+        string = "􀫦",  -- SF Symbol for memory
+        font = {
+            family = settings.font_icon.text,
+            style = settings.font_icon.style_map["Bold"],
+            size = settings.icon_size
+        },
+        padding_left = settings.padding.icon_label_item.icon.padding_left,
+        padding_right = settings.padding.icon_label_item.icon.padding_right,
+    },
+    label = {
+        string = "??%",
+        font = {
+            family = settings.font.numbers,
+            style = settings.font.style_map["Bold"],
+            size = settings.label_size,
+        },
+        align = "right",
+        padding_right = settings.padding.icon_label_item.label.padding_right,
+    },
 })
 
-ram_usage:subscribe("system_stats", function(env)
-	local used = env.RAM_USED:sub(1, -2)
-	ram_usage:push({ load })
+ram:subscribe({ "routine", "forced" }, function(env)
+    sbar.exec("memory_pressure", function(output)
+        -- Parse memory pressure output to calculate RAM usage
+        local pages_free = output:match("Pages free:%s+(%d+)")
+        local pages_active = output:match("Pages active:%s+(%d+)")
+        local pages_inactive = output:match("Pages inactive:%s+(%d+)")
+        local pages_speculative = output:match("Pages speculative:%s+(%d+)")
+        local pages_wired = output:match("Pages wired down:%s+(%d+)")
+        local pages_occupied = output:match("Pages occupied by compressor:%s+(%d+)")
 
-	-- local color = colors.blue
-	-- if load > 30 then
-	-- 	if load < 60 then
-	-- 		color = colors.yellow
-	-- 	elseif load < 80 then
-	-- 		color = colors.orange
-	-- 	else
-	-- 		color = colors.red
-	-- 	end
-	-- end
+        if pages_free and pages_active and pages_inactive and pages_wired then
+            pages_free = tonumber(pages_free)
+            pages_active = tonumber(pages_active)
+            pages_inactive = tonumber(pages_inactive)
+            pages_speculative = tonumber(pages_speculative or 0)
+            pages_wired = tonumber(pages_wired)
+            pages_occupied = tonumber(pages_occupied or 0)
 
-	ram_usage:set({
-		graph = { color = color },
-		label = "ram " .. env.RAM_USED:sub(1, -2) .. "%",
-	})
+            local total_pages = pages_free + pages_active + pages_inactive + pages_speculative + pages_wired + pages_occupied
+            local used_pages = pages_active + pages_wired + pages_occupied
+            local usage_percent = math.floor((used_pages / total_pages) * 100)
+
+            local color = colors.blue
+            if usage_percent > 60 then
+                color = colors.yellow
+            end
+            if usage_percent > 80 then
+                color = colors.orange
+            end
+            if usage_percent > 90 then
+                color = colors.red
+            end
+
+            ram:set({
+                label = {
+                    string = usage_percent .. "%",
+                    color = color
+                },
+                icon = { color = color }
+            })
+        end
+    end)
 end)
 
--- local memory = sbar.add("graph", "memory", 42, {
--- 	position = "right",
--- 	graph = { color = colors.blue },
--- 	background = {
--- 		height = 22,
--- 		color = { alpha = 0 },
--- 		border_color = { alpha = 0 },
--- 		drawing = true,
--- 	},
--- 	icon = { string = icons.ram },
--- 	label = {
--- 		string = "ram ??%",
--- 		font = {
--- 			family = settings.font.numbers,
--- 			style = settings.font.style_map["Bold"],
--- 			size = 9.0,
--- 		},
--- 		align = "right",
--- 		padding_right = 0,
--- 		width = 0,
--- 		y_offset = 4,
--- 	},
--- 	padding_right = settings.paddings + 6,
--- })
---
--- memory:subscribe("system_stats", function(env)
--- 	-- Also available: env.user_load, env.sys_load
--- 	local load = tonumber(env.RAM_USAGE)
--- 	memory:push({ load / 100. })
---
--- 	local color = colors.blue
--- 	if load > 30 then
--- 		if load < 60 then
--- 			color = colors.yellow
--- 		elseif load < 80 then
--- 			color = colors.orange
--- 		else
--- 			color = colors.red
--- 		end
--- 	end
---
--- 	memory:set({
--- 		graph = { color = color },
--- 		label = "ram " .. env.RAM_USAGE .. "%",
--- 	})
--- end)
---
-ram_usage:subscribe("mouse.clicked", function(env)
-	sbar.exec("open -a 'Activity Monitor'")
+ram:subscribe("mouse.clicked", function(env)
+    sbar.exec("open -a 'Activity Monitor'")
 end)
---
--- Background around the cpu item
-sbar.add("bracket", "widgets.ram.bracket", { ram_usage.name }, {
-	background = { color = colors.bg1 },
+
+-- Background around the ram item
+sbar.add("bracket", "widgets.ram.bracket", { ram.name }, {
+    background = { color = colors.bg1 }
 })
---
--- -- Background around the cpu item
+
+-- Padding after ram item
 sbar.add("item", "widgets.ram.padding", {
-	position = "right",
-	width = settings.group_paddings,
+    position = "right",
+    width = settings.group_paddings
 })

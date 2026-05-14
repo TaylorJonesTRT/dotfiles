@@ -1,8 +1,15 @@
 {
   "extras": [
+    "lazyvim.plugins.extras.ai.sidekick",
     "lazyvim.plugins.extras.coding.yanky",
+    "lazyvim.plugins.extras.dap.core",
+    "lazyvim.plugins.extras.dap.nlua",
+    "lazyvim.plugins.extras.editor.dial",
+    "lazyvim.plugins.extras.editor.illuminate",
     "lazyvim.plugins.extras.editor.inc-rename",
+    "lazyvim.plugins.extras.editor.outline",
     "lazyvim.plugins.extras.lang.astro",
+    "lazyvim.plugins.extras.lang.docker",
     "lazyvim.plugins.extras.lang.git",
     "lazyvim.plugins.extras.lang.json",
     "lazyvim.plugins.extras.lang.markdown",
@@ -16,6 +23,11 @@
     "lazyvim.plugins.extras.lang.toml",
     "lazyvim.plugins.extras.lang.typescript",
     "lazyvim.plugins.extras.lang.vue",
+    "lazyvim.plugins.extras.test.core",
+    "lazyvim.plugins.extras.ui.mini-indentscope",
+    "lazyvim.plugins.extras.ui.treesitter-context",
+    "lazyvim.plugins.extras.util.dot",
+    "lazyvim.plugins.extras.util.gh",
     "lazyvim.plugins.extras.util.mini-hipatterns"
   ],
   "install_version": 8,

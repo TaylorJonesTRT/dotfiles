@@ -24,6 +24,11 @@ void ax_perform_click(AXUIElementRef element) {
   AXUIElementPerformAction(element, kAXPressAction);
 }
 
+void ax_close_menu(AXUIElementRef element) {
+  if (!element) return;
+  AXUIElementPerformAction(element, kAXCancelAction);
+}
+
 CFStringRef ax_get_title(AXUIElementRef element) {
   CFTypeRef title = NULL;
   AXError error = AXUIElementCopyAttributeValue(element,
@@ -234,6 +239,11 @@ int main (int argc, char **argv) {
     AXUIElementRef app = ax_get_front_app();
     if (!app) return 1;
     ax_print_menu_options(app);
+    CFRelease(app);
+  } else if (strcmp(argv[1], "-c") == 0){
+    AXUIElementRef app = ax_get_front_app();
+    if (!app) return 1;
+    ax_close_menu(app);
     CFRelease(app);
   } else if (argc == 3 && strcmp(argv[1], "-s") == 0) {
     int id = 0;

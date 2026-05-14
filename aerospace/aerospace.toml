@@ -12,6 +12,8 @@ after-login-command = []
 after-startup-command = [
     'exec-and-forget sketchybar',
     'exec-and-forget borders active_color=0xffC198FD inactive_color=0xff494d64 width=5.0',
+    'workspace 6',
+    'workspace 1',
 ]
 
 exec-on-workspace-change = [
@@ -124,24 +126,20 @@ alt-shift-minus = 'resize smart -50'
 alt-shift-equal = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-alt-1 = 'workspace 1_Main'
-alt-2 = 'workspace 2_Dev'
-alt-3 = 'workspace 3_Mail'
-alt-4 = 'workspace 4_Notes'
-alt-5 = 'workspace 5_Music'
-alt-6 = 'workspace 6_Misc'
-alt-7 = 'workspace 7_Side'
-alt-c = 'workspace 8_Cintiq'
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-alt-shift-1 = 'move-node-to-workspace 1_Main'
-alt-shift-2 = 'move-node-to-workspace 2_Dev'
-alt-shift-3 = 'move-node-to-workspace 3_Mail'
-alt-shift-4 = 'move-node-to-workspace 4_Notes'
-alt-shift-5 = 'move-node-to-workspace 5_Music'
-alt-shift-6 = 'move-node-to-workspace 6_Misc'
-alt-shift-7 = 'move-node-to-workspace 7_Side'
-alt-shift-c = 'move-node-to-workspace 8_Cintiq'
+alt-shift-1 = 'move-node-to-workspace 1'
+alt-shift-2 = 'move-node-to-workspace 2'
+alt-shift-3 = 'move-node-to-workspace 3'
+alt-shift-4 = 'move-node-to-workspace 4'
+alt-shift-5 = 'move-node-to-workspace 5'
+alt-shift-6 = 'move-node-to-workspace 6'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -173,11 +171,11 @@ alt-shift-l = ['join-with right', 'mode main']
 # Ghostty config stuff
 [[on-window-detected]]
 if.app-id = "com.mitchellh.ghostty"
-run = ["layout tiling", 'move-node-to-workspace 2_Dev']
+run = ["layout tiling", 'move-node-to-workspace 2']
 
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
-run = 'move-node-to-workspace 1_Main'
+run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
@@ -187,55 +185,55 @@ check-further-callbacks = true
 
 [[on-window-detected]]
 if.app-id = "notion.id"
-run = "move-node-to-workspace 4_Notes"
+run = "move-node-to-workspace 4"
 
 [[on-window-detected]]
 if.app-id = "md.obsidian"
-run = "move-node-to-workspace 4_Notes"
+run = "move-node-to-workspace 4"
 
 [[on-window-detected]]
 if.app-id = "com.brave.Browser"
-run = ["move-node-to-workspace 2_Dev"]
+run = ["move-node-to-workspace 2"]
 
 [[on-window-detected]]
 if.app-id = "com.tinyapp.TablePlus-setapp"
-run = ["layout floating", "move-node-to-workspace 2_Dev"]
+run = ["layout floating", "move-node-to-workspace 2"]
 
 [[on-window-detected]]
 if.app-id = "com.electron.dockerdesktop"
-run = ["layout floating", "move-node-to-workspace 2_Dev"]
+run = ["layout floating", "move-node-to-workspace 2"]
 
 [[on-window-detected]]
 if.app-id = "com.linear"
-run = ["layout floating", "move-node-to-workspace 2_Dev"]
+run = ["layout floating", "move-node-to-workspace 2"]
 
 [[on-window-detected]]
 if.app-id = "com.usebruno.app"
-run = ["layout floating", "move-node-to-workspace 2_Dev"]
+run = ["layout floating", "move-node-to-workspace 2"]
 
 [[on-window-detected]]
 if.app-id = "com.postmanlabs.mac"
-run = ["layout floating", "move-node-to-workspace 2_Dev"]
+run = ["layout floating", "move-node-to-workspace 2"]
 
 [[on-window-detected]]
 if.app-id = "com.apple.mail"
-run = "move-node-to-workspace 3_Mail"
+run = "move-node-to-workspace 3"
 
 [[on-window-detected]]
 if.app-id = "com.flexibits.fantastical2.mac"
-run = "move-node-to-workspace 3_Mail"
+run = "move-node-to-workspace 3"
 
 [[on-window-detected]]
 if.app-id = "net.pcsx2.pcsx2"
-run = "move-node-to-workspace 6_Misc"
+run = "move-node-to-workspace 6"
 
 [[on-window-detected]]
 if.app-id = "com.apple.Music"
-run = "move-node-to-workspace 5_Music"
+run = "move-node-to-workspace 5"
 
 [[on-window-detected]]
 if.app-id = "com.hnc.Discord"
-run = "move-node-to-workspace 1_Main"
+run = "move-node-to-workspace 1"
 
 [[on-window-detected]]
 if.app-id = "com.apple.finder"
@@ -247,11 +245,11 @@ run = "layout floating"
 
 [[on-window-detected]]
 if.app-id = "com.apple.iBooksX"
-run = "move-node-to-workspace 6_Misc"
+run = "move-node-to-workspace 6"
 
 [[on-window-detected]]
 if.app-id = "org.mozilla.firefoxdeveloperedition"
-run = "move-node-to-workspace 6_Misc"
+run = "move-node-to-workspace 6"
 
 [[on-window-detected]]
 if.app-id = "com.cocoatech.PathFinder-setapp"
@@ -274,11 +272,9 @@ if.app-name-regex-substring = "Minecraft NeoForge* 1.21.1"
 run = "layout floating"
 
 [workspace-to-monitor-force-assignment]
-'1_Main' = 1
-'2_Dev' = 1
-'3_Mail' = 1
-'4_Notes' = 1
-'5_Music' = 1
-'6_Misc' = 1
-'7_Side' = 2
-'8_Cintiq' = 3
+'1' = 1
+'2' = 1
+'3' = 1
+'4' = 1
+'5' = 1
+'6' = 1
