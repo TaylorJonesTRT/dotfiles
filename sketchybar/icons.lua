@@ -8,6 +8,13 @@ local icons = {
     gear = "􀍟",
     cpu = "􀫥",
     clipboard = "􀉄",
+    preferences = "􀍟",
+        activity = "􀫥",
+	sleep = "􀜚",
+	lock = "􀎠",
+	logout = "􀉩",
+	power = "􀆨",
+	reboot = "􀯆",
 
     switch = {
       on = "􁏮",

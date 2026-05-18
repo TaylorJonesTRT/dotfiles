@@ -1,5 +1,16 @@
--- Load helper paths and build helper binaries before modules that depend on them.
-require("helpers")
+os.execute("[ ! -d $HOME/.local/share/sketchybar_lua/ ] && (git clone https://github.com/FelixKratz/SbarLua.git /tmp/SbarLua && cd /tmp/SbarLua/ && make install && rm -rf /tmp/SbarLua/)")
+
+os.execute("[ ! -d $HOME/.local/share/rift.lua/ ] && (git clone https://github.com/acsandmann/rift.lua.git /tmp/rift.lua && cd /tmp/rift.lua/ && make install && rm -rf /tmp/rift.lua/)")
+
+package.cpath = package.cpath .. ";/Users/" .. os.getenv("USER") .. "/.local/share/sketchybar_lua/?.so" .. ";/Users/" .. os.getenv("USER") .. "/.local/share/rift.lua/?.so"
+
+
+SBAR = require("sketchybar")
+
+SBAR.begin_config()
+require("helpers.utils")
 require("bar")
 require("default")
 require("items")
+SBAR.end_config()
+SBAR.event_loop()

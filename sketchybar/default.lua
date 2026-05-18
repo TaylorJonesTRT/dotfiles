@@ -2,51 +2,48 @@ local settings = require("settings")
 local colors = require("colors")
 
 -- Equivalent to the --default domain
-sbar.default({
-  updates = "when_shown",
-  icon = {
-    font = {
-      family = settings.font.text,
-      style = settings.font.style_map["Bold"],
-      size = 14.5
+SBAR.default({
+    updates = "when_shown",
+    icon = {
+        font = {
+            family = settings.font.text,
+            style = settings.font.style_map["Bold"],
+            size = 14.0
+        },
+        color = colors.white,
+        padding_left = settings.paddings,
+        padding_right = settings.paddings,
+        background = { image = { corner_radius = 9 } },
     },
-    color = colors.white,
-    padding_left = settings.paddings,
-    padding_right = settings.paddings,
-    background = { image = { corner_radius = 9 } },
-  },
-  label = {
-    font = {
-      family = settings.font.text,
-      style = settings.font.style_map["Semibold"],
-      size = 13.5
+    label = {
+        font = {
+            family = settings.font.text,
+            style = settings.font.style_map["Semibold"],
+            size = 13.0
+        },
+        color = colors.white,
+        padding_left = settings.paddings,
+        padding_right = settings.paddings,
     },
-    color = colors.white,
-    padding_left = settings.paddings,
-    padding_right = settings.paddings,
-  },
-  background = {
-    height = 29,
-    corner_radius = 10,
-    border_width = 2,
-    border_color = colors.bg2,
-    image = {
-      corner_radius = 10,
-      border_color = colors.grey,
-      border_width = 1
-    }
-  },
-  popup = {
     background = {
-      border_width = 2,
-      corner_radius = 10,
-      border_color = colors.popup.border,
-      color = colors.popup.bg,
-      shadow = { drawing = true },
+        height = 28,
+        corner_radius = 9,
+        -- border_width = 1,
+        -- border_color = colors.bg2,
+        image = {
+            corner_radius = 9,
+        }
     },
-    blur_radius = 50,
-  },
-  padding_left = 6,
-  padding_right = 6,
-  scroll_texts = true,
+    popup = {
+        background = {
+            color = colors.bar.bg,
+        border_color = colors.bar.border,
+        border_width = 1,
+        corner_radius = 16,
+        },
+        blur_radius = 48,
+    },
+    padding_left = 5,
+    padding_right = 5,
+    scroll_texts = true,
 })

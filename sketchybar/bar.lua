@@ -1,15 +1,16 @@
 local colors = require("colors")
 
 -- Equivalent to the --bar domain
-sbar.bar({
-    height = 36,
-    color = colors.with_alpha(colors.bar.bg, 0.5),
-    -- color=colors.transparent,
-    padding_right = 2,
-    padding_left = 2,
-    corner_radius = 23,
-    y_offset = 2,
-    shadow = false,
-    blur_radius = 10, -- ?
-    margin = 2
+SBAR.bar({
+	height = 40,
+	color = colors.bar.bg,
+	border_color = colors.bar.border,
+	border_width = 1,
+	padding_right = 2,
+	padding_left = 2,
+	font_smoothing = true,
+	y_offset = 6,
+	blur_radius = 18,
+	corner_radius = 16,
+	margin = 16,
 })

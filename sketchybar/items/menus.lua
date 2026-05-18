@@ -2,28 +2,20 @@ local colors = require("colors")
 local icons = require("icons")
 local settings = require("settings")
 
-local menu_watcher = sbar.add("item", {
+local menu_watcher = SBAR.add("item", {
   drawing = false,
   updates = false,
 })
-local space_menu_swap = sbar.add("item", {
+local space_menu_swap = SBAR.add("item", {
   drawing = false,
   updates = true,
 })
-sbar.add("event", "swap_menus_and_spaces")
-
-local menu_leading_padding = sbar.add("item", "menu.leading_padding", {
-  drawing = false,
-  width = 0,
-  icon = { drawing = false },
-  label = { drawing = false },
-  background = { drawing = false },
-})
+SBAR.add("event", "swap_menus_and_spaces")
 
 local max_items = 15
 local menu_items = {}
 for i = 1, max_items, 1 do
-  local menu = sbar.add("item", "menu." .. i, {
+  local menu = SBAR.add("item", "menu." .. i, {
     padding_left = settings.paddings,
     padding_right = settings.paddings,
     drawing = false,
@@ -32,8 +24,8 @@ for i = 1, max_items, 1 do
       font = {
         style = settings.font.style_map[i == 1 and "Heavy" or "Semibold"]
       },
-      padding_left = 7,
-      padding_right = 7,
+      padding_left = 6,
+      padding_right = 6,
     },
     click_script = "$CONFIG_DIR/helpers/menus/bin/menus -s " .. i,
   })
@@ -41,19 +33,18 @@ for i = 1, max_items, 1 do
   menu_items[i] = menu
 end
 
-sbar.add("bracket", { '/menu\\..*/' }, {
-  background = { color = colors.bg1 }
+SBAR.add("bracket", { '/menu\\..*/' }, {
+  background = { color = colors.bg1, border_color = colors.bg2, border_width = 1 }
 })
 
-local menu_padding = sbar.add("item", "menu.padding", {
+local menu_padding = SBAR.add("item", "menu.padding", {
   drawing = false,
-  width = 6
+  width = 5
 })
 
 local function update_menus(env)
-  sbar.exec("$CONFIG_DIR/helpers/menus/bin/menus -l", function(menus)
-    sbar.set('/menu\\..*/', { drawing = false })
-    menu_leading_padding:set({ drawing = true, width = 14 })
+  SBAR.exec("$CONFIG_DIR/helpers/menus/bin/menus -l", function(menus)
+    SBAR.set('/menu\\..*/', { drawing = false })
     menu_padding:set({ drawing = true })
     id = 1
     for menu in string.gmatch(menus, '[^\r\n]+') do
@@ -71,14 +62,13 @@ space_menu_swap:subscribe("swap_menus_and_spaces", function(env)
   local drawing = menu_items[1]:query().geometry.drawing == "on"
   if drawing then
     menu_watcher:set( { updates = false })
-    menu_leading_padding:set( { drawing = false, width = 0 } )
-    sbar.set("/menu\\..*/", { drawing = false })
-    sbar.set("/space\\..*/", { drawing = true })
-    sbar.set("front_app", { drawing = true })
+    SBAR.set("/menu\\..*/", { drawing = false })
+    SBAR.set("/space\\..*/", { drawing = true })
+    SBAR.set("front_app", { drawing = true })
   else
     menu_watcher:set( { updates = true })
-    sbar.set("/space\\..*/", { drawing = false })
-    sbar.set("front_app", { drawing = false })
+    SBAR.set("/space\\..*/", { drawing = false })
+    SBAR.set("front_app", { drawing = false })
     update_menus()
   end
 end)
