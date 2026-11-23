@@ -88,6 +88,13 @@ return {
       is_hidden_file = function(name, bufnr)
         return vim.startswith(name, ".")
       end,
+      -- Always hide Godot clutter in Godot projects
+      is_always_hidden = function(name, bufnr)
+        if not require("config.godot").is_project then
+          return false
+        end
+        return vim.endswith(name, ".uid") or name == "server.pipe"
+      end,
       case_insensitive = false,
       sort = {
         -- sort order can be "asc" or "desc"

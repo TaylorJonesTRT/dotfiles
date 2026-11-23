@@ -7,6 +7,7 @@ local icons = {
     apple = "􀣺",
     gear = "􀍟",
     cpu = "􀫥",
+    ram = "􀫎",
     clipboard = "􀉄",
     preferences = "􀍟",
         activity = "􀫥",
@@ -15,6 +16,7 @@ local icons = {
 	logout = "􀉩",
 	power = "􀆨",
 	reboot = "􀯆",
+	force_quit = "􀒴",
 
     switch = {
       on = "􁏮",
@@ -56,6 +58,7 @@ local icons = {
     apple = "",
     gear = "",
     cpu = "",
+    ram = "",
     clipboard = "Missing Icon",
 
     switch = {

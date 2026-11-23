@@ -1,6 +1,10 @@
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
+# Config version for compatibility and deprecations
+# See: https://nikitabobko.github.io/AeroSpace/guide#config-version
+config-version = 2
+
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
@@ -11,7 +15,7 @@ after-login-command = []
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
     'exec-and-forget sketchybar',
-    'exec-and-forget borders active_color=0xffC198FD inactive_color=0xff494d64 width=5.0',
+    'exec-and-forget borders & b=$!; while pgrep -xq AeroSpace; do sleep 2; done; kill $b',
     'workspace 6',
     'workspace 1',
 ]
@@ -216,6 +220,22 @@ if.app-id = "com.postmanlabs.mac"
 run = ["layout floating", "move-node-to-workspace 2"]
 
 [[on-window-detected]]
+if.app-id = "app.yaak.desktop"
+run = ["layout floating", "move-node-to-workspace 2"]
+
+[[on-window-detected]]
+if.app-id = "com.jetbrains.datagrip"
+run = ["layout floating", "move-node-to-workspace 2"]
+
+[[on-window-detected]]
+if.app-id = "org.aseprite.Aseprite"
+run = ["layout floating", "move-node-to-workspace 2"]
+
+[[on-window-detected]]
+if.app-id = "net.imput.helium"
+run = "move-node-to-workspace 2"
+
+[[on-window-detected]]
 if.app-id = "com.apple.mail"
 run = "move-node-to-workspace 3"
 
@@ -261,6 +281,11 @@ run = "layout floating"
 
 [[on-window-detected]]
 if.app-id = "org.deskflow.deskflow"
+run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = "org.godotengine.godot"
+if.window-title-regex-substring = '\(DEBUG\)'
 run = "layout floating"
 
 [[on-window-detected]]

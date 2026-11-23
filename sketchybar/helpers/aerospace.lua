@@ -39,8 +39,6 @@ local use_simd              = simdjson_ok
 
 local DEFAULT               = {
     SOCK_FMT = "/tmp/bobko.aerospace-%s.sock",
-    MAX_BUF  = 2048,
-    EXT_BUF  = 4096,
     TIMEOUT_MS = 5000,  -- 5 second timeout for socket operations
 }
 
@@ -68,6 +66,24 @@ local AF_UNIX, SOCK_STREAM  = socket.AF_UNIX, socket.SOCK_STREAM
 local write, read, close    = unistd.write, unistd.read, unistd.close
 local encode                = cjson.encode
 
+-- AeroSpace's socket protocol (as of the NWConnection-based server) requires:
+-- 1. A one-time handshake per connection: client writes its protocol version
+--    as a raw 4-byte little-endian uint32, server echoes back its own.
+-- 2. Every request/response after that is length-prefixed: a 4-byte
+--    little-endian uint32 byte count, followed by exactly that many bytes
+--    of JSON. See Sources/Common/util/NWConnectionEx.swift and
+--    Sources/AppBundle/server.swift in the AeroSpace repo.
+local SOCKET_PROTOCOL_VERSION = 1
+
+local function u32le_encode(n)
+    return string.char(n % 256, math.floor(n / 256) % 256, math.floor(n / 65536) % 256, math.floor(n / 16777216) % 256)
+end
+
+local function u32le_decode(s)
+    local b1, b2, b3, b4 = s:byte(1, 4)
+    return b1 + b2 * 256 + b3 * 65536 + b4 * 16777216
+end
+
 local function decode(str)
     if use_simd then
         local ok, val = pcall(simdjson.parse, str)
@@ -77,6 +93,41 @@ local function decode(str)
     local ok, val = pcall(cjson.decode, str)
     if not ok then error(ERR.JSON .. ": " .. tostring(val)) end
     return val
+end
+
+-- Reads exactly `size` bytes from fd, polling with a timeout between reads.
+-- Returns the bytes read, or nil if the read timed out or the peer closed.
+local function read_exact(fd, size, timeout_ms)
+    local chunks = {}
+    local remaining = size
+    while remaining > 0 do
+        if not wait_for_data(fd, timeout_ms) then
+            return nil, "timeout"
+        end
+        local chunk = read(fd, remaining)
+        if not chunk or #chunk == 0 then
+            return nil, "closed"
+        end
+        table.insert(chunks, chunk)
+        remaining = remaining - #chunk
+    end
+    return table.concat(chunks)
+end
+
+local function handshake(fd)
+    log.debug("performing protocol handshake, fd=%d", fd)
+    write(fd, u32le_encode(SOCKET_PROTOCOL_VERSION))
+    local resp, err = read_exact(fd, 4, DEFAULT.TIMEOUT_MS)
+    if not resp then
+        log.error("handshake failed: %s", tostring(err))
+        error("handshake failed: " .. tostring(err))
+    end
+    local server_version = u32le_decode(resp)
+    if server_version ~= SOCKET_PROTOCOL_VERSION then
+        log.error("protocol version mismatch: client=%d server=%d", SOCKET_PROTOCOL_VERSION, server_version)
+        error(string.format("protocol version mismatch: client=%d server=%d", SOCKET_PROTOCOL_VERSION, server_version))
+    end
+    log.debug("handshake ok, server_version=%d", server_version)
 end
 
 local function connect(path)
@@ -95,6 +146,13 @@ local function connect(path)
         close(fd); error("cannot connect to " .. path)
     end
     log.info("connected successfully, fd=%d", fd)
+
+    local ok, herr = pcall(handshake, fd)
+    if not ok then
+        close(fd)
+        error(herr)
+    end
+
     return fd
 end
 
@@ -125,9 +183,6 @@ end
 
 local Aerospace = {}; Aerospace.__index = Aerospace
 
--- Track consecutive empty responses to detect stale sockets
-local EMPTY_RESPONSE_THRESHOLD = 3
-
 function Aerospace.new(path)
     if not path then
         local username = io.popen("id -un"):read("*l")
@@ -137,7 +192,6 @@ function Aerospace.new(path)
     return setmetatable({
         sockPath = path,
         fd = connect(path),
-        empty_response_count = 0,
     }, Aerospace)
 end
 
@@ -157,7 +211,7 @@ end
 
 function Aerospace:is_initialized() return self.fd ~= nil end
 
-local PAYLOAD_TMPL = '{"command":"","args":%s,"stdin":""}\n'
+local PAYLOAD_TMPL = '{"args":%s,"stdin":""}'
 function Aerospace:_query(args, want_json, big)
     -- Auto-reconnect if socket is not initialized
     if not self:is_initialized() then
@@ -176,7 +230,8 @@ function Aerospace:_query(args, want_json, big)
 
     local cmd_name = args[1] or "unknown"
     local start_time = os.clock()
-    local payload = PAYLOAD_TMPL:format(encode(args))
+    local body = PAYLOAD_TMPL:format(encode(args))
+    local payload = u32le_encode(#body) .. body
 
     log.debug("query start: %s (fd=%d)", cmd_name, self.fd)
     log.blocking_start("write", string.format("cmd=%s bytes=%d", cmd_name, #payload))
@@ -184,78 +239,36 @@ function Aerospace:_query(args, want_json, big)
     write(self.fd, payload)
     log.blocking_end("write", (os.clock() - write_start) * 1000)
 
-    -- Read all available data from socket in chunks
-    -- Uses poll() with timeout to avoid blocking forever if AeroSpace is unresponsive
-    local chunks = {}
-    local chunk_size = big and DEFAULT.EXT_BUF or DEFAULT.MAX_BUF
-    local attempts = 0
-    local max_attempts = 10
-    local total_bytes = 0
-    local timed_out = false
+    -- Response framing: 4-byte little-endian length prefix, then exactly
+    -- that many bytes of JSON body.
+    log.blocking_start("read", string.format("cmd=%s (length prefix)", cmd_name))
+    local read_start = os.clock()
+    local len_bytes, len_err = read_exact(self.fd, 4, DEFAULT.TIMEOUT_MS)
 
-    repeat
-        log.blocking_start("read", string.format("cmd=%s attempt=%d chunk_size=%d", cmd_name, attempts + 1, chunk_size))
+    if not len_bytes then
+        log.error("failed to read length prefix: cmd=%s err=%s", cmd_name, tostring(len_err))
+        log.error("socket in bad state, reconnecting")
+        self:reconnect()
+        return want_json and {} or ""
+    end
 
-        -- Wait for data with timeout before attempting read
-        if not wait_for_data(self.fd, DEFAULT.TIMEOUT_MS) then
-            log.error("TIMEOUT waiting for data: cmd=%s after %dms (attempt %d)", cmd_name, DEFAULT.TIMEOUT_MS, attempts + 1)
-            timed_out = true
-            break
-        end
+    local body_len = u32le_decode(len_bytes)
+    local raw, body_err = read_exact(self.fd, body_len, DEFAULT.TIMEOUT_MS)
+    log.blocking_end("read", (os.clock() - read_start) * 1000)
 
-        local read_start = os.clock()
-        local chunk = read(self.fd, chunk_size)
-        local read_elapsed = (os.clock() - read_start) * 1000
-        log.blocking_end("read", read_elapsed)
-
-        if chunk and #chunk > 0 then
-            table.insert(chunks, chunk)
-            total_bytes = total_bytes + #chunk
-            log.debug("read chunk: %d bytes (total=%d)", #chunk, total_bytes)
-        else
-            log.debug("read returned empty, breaking")
-            break
-        end
-        attempts = attempts + 1
-    until #chunk < chunk_size or attempts >= max_attempts
-
-    -- If we timed out, the socket is likely in a bad state - reconnect
-    if timed_out then
-        log.error("socket timeout, attempting reconnect")
+    if not raw then
+        log.error("failed to read body: cmd=%s expected=%d err=%s", cmd_name, body_len, tostring(body_err))
+        log.error("socket in bad state, reconnecting")
         self:reconnect()
         return want_json and {} or ""
     end
 
     local elapsed_ms = (os.clock() - start_time) * 1000
-    log.socket("query_complete", self.fd, total_bytes, elapsed_ms)
+    log.socket("query_complete", self.fd, #raw, elapsed_ms)
 
     if elapsed_ms > 500 then
-        log.warn("SLOW QUERY: %s took %.2fms, %d bytes", cmd_name, elapsed_ms, total_bytes)
+        log.warn("SLOW QUERY: %s took %.2fms, %d bytes", cmd_name, elapsed_ms, #raw)
     end
-
-    local raw = table.concat(chunks)
-
-    -- Validate we got data
-    if raw == "" or raw:match("^%s*$") then
-        self.empty_response_count = self.empty_response_count + 1
-        log.warn("empty response for: %s (consecutive empty: %d/%d)",
-            cmd_name, self.empty_response_count, EMPTY_RESPONSE_THRESHOLD)
-
-        -- Detect stale socket: too many consecutive empty responses
-        if self.empty_response_count >= EMPTY_RESPONSE_THRESHOLD then
-            log.error("STALE SOCKET DETECTED: %d consecutive empty responses, reconnecting", self.empty_response_count)
-            self.empty_response_count = 0
-            self:reconnect()
-        end
-
-        return want_json and {} or ""
-    end
-
-    -- Reset counter on successful response
-    if self.empty_response_count > 0 then
-        log.info("socket recovered after %d empty responses", self.empty_response_count)
-    end
-    self.empty_response_count = 0
 
     local out = stdout(raw)
     return want_json and decode(out) or out

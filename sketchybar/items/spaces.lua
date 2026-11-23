@@ -5,6 +5,12 @@ local Aerospace = require("helpers.aerospace")
 local MAX_WS = 10
 local MAX_APPS = 12
 
+-- Workspaces to always draw, even when empty. AeroSpace's `list-workspaces
+-- --all` only reports non-empty/visible workspaces (as of 0.21.x), so we can't
+-- rely on the query to enumerate configured-but-empty workspaces. Keep this in
+-- sync with the `alt-N = 'workspace N'` bindings in aerospace/aerospace.toml.
+local WORKSPACES = { 1, 2, 3, 4, 5, 6 }
+
 local ok, aerospace = pcall(Aerospace.new)
 if not ok or not aerospace then
 	return
@@ -148,17 +154,32 @@ local function refresh()
 		end
 	end
 
-	local seen = {}
+	-- Which workspace is focused (the query only reports non-empty/visible
+	-- workspaces, but the focused one is always visible, so this is reliable).
+	local focused = {}
 	for _, ws in ipairs(ws_list) do
-		local name = ws["workspace"]
-		local idx = tonumber(name)
-		if idx and idx >= 1 and idx <= MAX_WS then
-			paint(idx, ws["workspace-is-focused"] == true, by_ws[name] or {}, slots[idx])
-			seen[idx] = true
+		if ws["workspace-is-focused"] == true then
+			focused[ws["workspace"]] = true
 		end
 	end
+
+	-- Draw the configured workspaces unconditionally, plus any populated
+	-- workspace the query surfaced beyond that set.
+	local to_show = {}
+	for _, idx in ipairs(WORKSPACES) do
+		to_show[idx] = true
+	end
+	for _, ws in ipairs(ws_list) do
+		local idx = tonumber(ws["workspace"])
+		if idx then
+			to_show[idx] = true
+		end
+	end
+
 	for i = 1, MAX_WS do
-		if not seen[i] then
+		if to_show[i] then
+			paint(i, focused[tostring(i)] == true, by_ws[tostring(i)] or {}, slots[i])
+		else
 			hide(slots[i])
 		end
 	end

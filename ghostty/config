@@ -26,10 +26,16 @@ palette = 12=#74a8fc
 palette = 13=#f2aede
 palette = 14=#6bd7ca
 palette = 15=#bac2de
-font-family = JetBrainsMono Nerd Font
+font-family = "Maple Mono NF"
+font-size = 14
+# Optional: turn on character variants / stylistic sets
+font-feature = cv01
+font-feature = ss01
 keybind = ctrl+|=new_split:right
 keybind = ctrl+-=new_split:down
 keybind = super+k=goto_split:right
 keybind = super+j=goto_split:bottom
 keybind = super+h=goto_split:left
 keybind = super+k=goto_split:top
+macos-auto-secure-input = false
+mouse-scroll-multiplier = 0.1

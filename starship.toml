@@ -200,6 +200,7 @@ utc_time_offset = 'local'
 format = '\[[$time]($style)\]'
 
 [username]
+show_always = false            # Only shows when remote or root
 format = '\[[$user]($style)\]'
 
 [vagrant]
@@ -213,3 +214,8 @@ format = '\[[$symbol($version)]($style)\]'
 
 [solidity]
 format = '\[[$symbol($version)]($style)\]'
+
+[hostname]
+ssh_only = true                    # Only shows when connected via SSH (default behavior)
+format = "on [$hostname]($style) "
+disabled = false

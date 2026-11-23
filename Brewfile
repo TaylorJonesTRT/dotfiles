@@ -1,163 +1,240 @@
-tap "1password/tap"
-tap "apple/apple"
-tap "elastic/tap"
-tap "homebrew/bundle"
-tap "homebrew/cask-drivers"
-tap "homebrew/cask-fonts"
-tap "homebrew/services"
-tap "koekeishiya/formulae"
-tap "michaeleisel/zld"
-tap "oven-sh/bun"
-tap "shivammathur/php"
-tap "teamookla/speedtest"
-tap "tursodatabase/tap"
-# Zstandard is a real-time compression algorithm
-brew "zstd"
+tap '1password/tap'
+tap 'apple/apple'
+tap 'asmvik/formulae', 'https://github.com/asmvik/homebrew-formulae.git'
+tap 'deskflow/tap'
+tap 'elastic/tap'
+tap 'felixkratz/formulae', 'https://github.com/FelixKratz/homebrew-formulae', trusted: true
+tap 'homebrew/bundle'
+tap 'homebrew/services'
+tap 'libsql/sqld'
+tap 'michaeleisel/zld'
+tap 'nikitabobko/tap', trusted: true
+tap 'oven-sh/bun'
+tap 'puma/puma'
+tap 'schpet/tap'
+tap 'shivammathur/php'
+tap 'teamookla/speedtest'
+tap 'thezoraiz/ascii-image-converter', 'https://github.com/TheZoraiz/homebrew-ascii-image-converter'
+tap 'tursodatabase/tap'
+tap 'xenforo-ltd/tap'
 # Companion library to apr, the Apache Portable Runtime library
-brew "apr-util"
+brew 'apr-util'
+# Zstandard is a real-time compression algorithm
+brew 'zstd'
 # Cross-platform make
-brew "cmake"
+brew 'cmake'
 # C library implementing the SSH2 protocol
-brew "libssh2"
-# Open source suite of directory software
-brew "openldap"
+brew 'libssh2'
 # Get a file from an HTTP, HTTPS or FTP server
-brew "curl"
+brew 'curl'
+# GNU File, Shell, and Text utilities
+brew 'coreutils'
 # Secure runtime for JavaScript and TypeScript
-brew "deno"
+brew 'deno'
+# .NET Core
+brew 'dotnet'
 # Simple, fast and user-friendly alternative to find
-brew "fd"
-# Libraries to talk to Microsoft SQL Server and Sybase databases
-brew "freetds"
+brew 'fd'
+# Play, record, convert, and stream select audio and video codecs
+brew 'ffmpeg'
+# Command-line tools for fly.io services
+brew 'flyctl'
 # Command-line fuzzy finder written in Go
-brew "fzf"
+brew 'fzf'
 # GNU compiler collection
-brew "gcc"
+brew 'gcc'
 # GitHub command-line tool
-brew "gh"
+brew 'gh'
 # Distributed revision control system
-brew "git"
+brew 'git'
 # Render markdown on the CLI
-brew "glow"
+brew 'glow'
+# Open source programming language to build simple/reliable/efficient software
+brew 'go'
 # Fulltext search engine and column store
-brew "groonga"
-# Apache HTTP server
-brew "httpd"
+brew 'groonga'
+# OpenType text shaping engine
+brew 'harfbuzz'
 # ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
-brew "libheif"
-# Library for reading RAW files from digital photo cameras
-brew "libraw"
-# Tools and libraries to manipulate images in many formats
-brew "imagemagick"
-# Network authentication protocol
-brew "krb5"
+brew 'libheif'
+# Fast, Dynamic Programming Language
+brew 'julia'
+# Golang RPC framework for microservices
+brew 'kitex'
 # Simple terminal UI for git commands
-brew "lazygit"
+brew 'lazygit'
 # Provides library functionality for FIDO U2F & FIDO 2.0, including USB
-brew "libfido2"
-# Postgres C API library
-brew "libpq"
-# Web and API based SMTP testing tool
-brew "mailhog"
+brew 'libfido2'
+# Library for reading RAW files from digital photo cameras
+brew 'libraw'
+# Parsing Expression Grammars For Lua
+brew 'lpeg'
+# Powerful, lightweight programming language
+brew 'lua'
+# Powerful, lightweight programming language
+brew 'lua@5.4'
+# Package manager for the Lua programming language
+brew 'luarocks'
 # Utility for directing compilation
-brew "make"
-# Drop-in replacement for MySQL
-brew "mariadb"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.11"
+brew 'make'
+# Control and observe media playback from the command-line
+brew 'media-control'
+# Simple tool to make locally trusted development certificates
+brew 'mkcert'
+# Project documentation with Markdown
+brew 'mkdocs'
 # Cross platform, open source .NET development framework
-brew "mono"
+brew 'mono'
 # Fast, highly customisable system info script
-brew "neofetch"
-# Parser generator tool and incremental parsing library
-brew "tree-sitter"
+brew 'neofetch'
+# Incremental parsing library
+brew 'tree-sitter'
 # Ambitious Vim-fork focused on extensibility and agility
-brew "neovim"
-# HTTP(S) server and reverse proxy, and IMAP/POP3 proxy server
-brew "nginx"
-# Web interface for MySQL and MariaDB
-brew "phpmyadmin"
-# Execute binaries from Python packages in isolated environments
-brew "pipx"
-# Manage compile and link flags for libraries
-brew "pkg-config"
+brew 'neovim'
+# Small build system for use with gyp or CMake
+brew 'ninja'
+# Retrieves currently playing media, and simulates media actions
+brew 'nowplaying-cli'
+# Libraries for security-enabled client and server applications
+brew 'nss'
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew 'poppler'
 # Object-relational database system
-brew "postgresql@14"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.10"
+brew 'postgresql@14'
 # Install various Ruby versions and implementations
-brew "ruby-build"
+brew 'ruby-build'
 # Ruby version manager
-brew "rbenv"
-# Persistent key-value database, with built-in net interface
-brew "redis"
+brew 'rbenv'
 # Search tool like grep and The Silver Searcher
-brew "ripgrep"
+brew 'ripgrep'
+# SMB/CIFS file, print, and login server for UNIX
+brew 'samba'
+# Ruby language server
+brew 'solargraph'
+# Cross-shell prompt for astronauts
+brew 'starship'
+# Change macOS audio source from the command-line
+brew 'switchaudio-osx'
 # Terminal multiplexer
-brew "tmux"
-# Simple hotkey-daemon for macOS.
-brew "koekeishiya/formulae/skhd"
-# A tiling window manager for macOS based on binary space partitioning.
-brew "koekeishiya/formulae/yabai"
-# A faster version of ld, Apple's linker
-brew "michaeleisel/zld/zld"
-# Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
-brew "oven-sh/bun/bun"
-# General-purpose scripting language
-brew "shivammathur/php/php@5.6"
-# General-purpose scripting language
-brew "shivammathur/php/php@7.4", link: true
-# General-purpose scripting language
-brew "shivammathur/php/php@8.0"
-# Ookla Speedtest
-brew "teamookla/speedtest/speedtest"
-brew "tursodatabase/tap/turso"
+brew 'tmux'
+# Extraction utility for .zip compressed archives
+brew 'unzip'
+# Watch files and take action when they change
+brew 'watchman'
+# Internet file retriever
+brew 'wget'
+# Utility to configure and test X input devices
+brew 'xinput'
+# A window border system for macOS
+brew 'felixkratz/formulae/borders'
+# Custom macOS statusbar with shell plugin, interaction and graph support
+brew 'felixkratz/formulae/sketchybar'
 # Command-line interface for 1Password
-cask "1password-cli"
-# Control USB Cameras from an app
-cask "cameracontroller"
-# Developer targeted fonts with a high number of glyphs
-cask "font-fira-mono-nerd-font"
-# Developer targeted fonts with a high number of glyphs
-cask "font-hack-nerd-font"
-# Game development engine
-cask "godot"
+cask '1password-cli'
+# AeroSpace is an i3-like tiling window manager for macOS
+cask 'nikitabobko/tap/aerospace'
+# Terminal-based AI coding assistant
+cask 'claude-code@latest'
+# OpenAI's coding agent that runs in your terminal
+cask 'codex'
+# Server and cloud storage browser
+cask 'cyberduck'
+# Mouse and keyboard sharing utility
+cask 'deskflow/tap/deskflow', trusted: true
+
+cask 'font-caskaydia-cove-nerd-font'
+cask 'font-fira-mono-nerd-font'
+cask 'font-hack-nerd-font'
+cask 'font-maple-mono-nf'
+cask 'font-sf-mono'
+cask 'font-sf-pro'
+# 2D and 3D game engine
+cask 'godot'
 # Free and open-source media player
-cask "iina"
-# HTTP and GraphQL Client
-cask "insomnia"
+cask 'iina'
 # Terminal emulator as alternative to Apple's Terminal app
-cask "iterm2"
-# Keyboard customizer
-cask "karabiner-elements"
-# App to write, plan, collaborate, and get organized
-cask "notion"
-# Home media server
-cask "plex-media-server"
-# Peer to peer Bitorrent client
-cask "qbittorrent"
-vscode "bradlc.vscode-tailwindcss"
-vscode "dbaeumer.vscode-eslint"
-vscode "denoland.vscode-deno"
-vscode "eamodio.gitlens"
-vscode "EliverLara.andromeda"
-vscode "esbenp.prettier-vscode"
-vscode "misogi.ruby-rubocop"
-vscode "ms-python.isort"
-vscode "ms-python.python"
-vscode "ms-python.vscode-pylance"
-vscode "ms-toolsai.jupyter"
-vscode "ms-toolsai.jupyter-keymap"
-vscode "ms-toolsai.jupyter-renderers"
-vscode "ms-toolsai.vscode-jupyter-cell-tags"
-vscode "ms-toolsai.vscode-jupyter-slideshow"
-vscode "oven.bun-vscode"
-vscode "Prisma.prisma"
-vscode "rebornix.ruby"
-vscode "redhat.vscode-yaml"
-vscode "ritwickdey.LiveServer"
-vscode "rust-lang.rust-analyzer"
-vscode "vscodevim.vim"
-vscode "wingrunr21.vscode-ruby"
-vscode "withfig.fig"
-vscode "yoavbls.pretty-ts-errors"
+cask 'iterm2'
+# Media system
+cask 'jellyfin'
+# Open-source firewall to block unknown outgoing connections
+cask 'lulu'
+# App to write, plan, collaborate, and get organised
+cask 'notion'
+# Tool that provides consistent, highly configurable symbols for apps
+cask 'sf-symbols'
+# Screenshot measurement and annotation tool
+cask 'shottr'
+# Unpacks archive files
+cask 'the-unarchiver'
+# Menu bar toolkit with keep-awake, system monitor and volume mixer
+cask 'vorssaint'
+# Live wallpaper app
+cask 'wallspace'
+# Connect to Windows
+cask 'windows-app'
+# Command line interface for XenForo
+cask 'xenforo-ltd/tap/xf-cli', trusted: true
+# REST, GraphQL and gRPC client
+cask 'yaak'
+vscode 'asvetliakov.vscode-neovim'
+vscode 'bmewburn.vscode-intelephense-client'
+vscode 'bradlc.vscode-tailwindcss'
+vscode 'bung87.rails'
+vscode 'bung87.vscode-gemfile'
+vscode 'castwide.solargraph'
+vscode 'catppuccin.catppuccin-vsc'
+vscode 'catppuccin.catppuccin-vsc-icons'
+vscode 'dbaeumer.vscode-eslint'
+vscode 'denoland.vscode-deno'
+vscode 'eliverlara.andromeda'
+vscode 'esbenp.prettier-vscode'
+vscode 'james-yu.latex-workshop'
+vscode 'junstyle.php-cs-fixer'
+vscode 'kaiwood.endwise'
+vscode 'koichisasada.vscode-rdbg'
+vscode 'mehedidracula.php-namespace-resolver'
+vscode 'misogi.ruby-rubocop'
+vscode 'ms-python.debugpy'
+vscode 'ms-python.isort'
+vscode 'ms-python.python'
+vscode 'ms-python.vscode-pylance'
+vscode 'ms-python.vscode-python-envs'
+vscode 'ms-toolsai.jupyter'
+vscode 'ms-toolsai.jupyter-keymap'
+vscode 'ms-toolsai.jupyter-renderers'
+vscode 'ms-toolsai.vscode-jupyter-cell-tags'
+vscode 'ms-toolsai.vscode-jupyter-slideshow'
+vscode 'mtxr.sqltools'
+vscode 'mtxr.sqltools-driver-mysql'
+vscode 'oven.bun-vscode'
+vscode 'prisma.prisma'
+vscode 'redhat.vscode-yaml'
+vscode 'ritwickdey.liveserver'
+vscode 'robertostermann.inline-parameters-extended'
+vscode 'rust-lang.rust-analyzer'
+vscode 'shopify.ruby-extensions-pack'
+vscode 'shopify.ruby-lsp'
+vscode 'sianglim.slim'
+vscode 'sorbet.sorbet-vscode-extension'
+vscode 'usernamehw.errorlens'
+vscode 'visualstudioexptteam.intellicode-api-usage-examples'
+vscode 'visualstudioexptteam.vscodeintellicode'
+vscode 'wakatime.vscode-wakatime'
+vscode 'wayou.vscode-todo-highlight'
+vscode 'withfig.fig'
+vscode 'xdebug.php-debug'
+vscode 'yoavbls.pretty-ts-errors'
+cargo 'cargo-audit'
+cargo 'cargo-expand'
+cargo 'cargo-generate'
+cargo 'cargo-tarpaulin'
+cargo 'cargo-udeps'
+cargo 'cargo-watch'
+cargo 'rustjson'
+cargo 'rustlings'
+cargo 'sqlx-cli'
+cargo 'stats_provider'
+npm 'agent-browser'
+npm 'corepack'
+npm 'ghost-cli'
+npm 'yarn'

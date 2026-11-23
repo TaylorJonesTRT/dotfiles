@@ -73,6 +73,12 @@ end
 
 apple.prefs = add_apple_item("prefs", icons.preferences, "Preferences", "open -a 'System Preferences'")
 apple.activity = add_apple_item("activity", icons.activity, "Activity", "open -a 'Activity Monitor'")
+apple.force_quit = add_apple_item(
+	"force_quit",
+	icons.force_quit,
+	"Force Quit",
+	'osascript -e \'tell application "System Events" to key code 53 using {command down, option down}\''
+)
 
 apple.lock = add_apple_item(
 	"lock",
